@@ -1,4 +1,4 @@
-### Tutorial Application For Building Tasty Burgers with the help of React and Firebase
+### Tutorial Web Application For Building Tasty Burgers with the help of React and Firebase
 
 
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).

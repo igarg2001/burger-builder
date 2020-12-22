@@ -4,8 +4,10 @@ import { connect } from 'react-redux';
 
 import CheckoutSummary from '../../components/Order/CheckoutSummary/CheckoutSummary';
 import ContactData from './ContactData/ContactData';
+import { fetchIngredients } from '../../store/actions';
 
 class Checkout extends Component {
+
 
     checkoutCancelledHandler = () => {
         this.props.history.goBack();
@@ -16,6 +18,8 @@ class Checkout extends Component {
     }
 
     render () {
+        console.log('render')
+        //console.log(this.props)
         return (
             <div>
                 <CheckoutSummary
@@ -24,7 +28,7 @@ class Checkout extends Component {
                     checkoutContinued={this.checkoutContinuedHandler} />
                 <Route 
                     path={this.props.match.path + '/contact-data'} 
-                    component={ContactData} />
+                    component = {ContactData} />
             </div>
         );
     }
@@ -32,8 +36,14 @@ class Checkout extends Component {
 
 const mapStateToProps = state => {
     return {
-        ings: state.ingredients
+        ings: state.burger.ingredients
     }
 };
 
-export default connect(mapStateToProps)(Checkout);
+const mapDispatchtoProps = dispatch => {
+    return {
+        fetchIngredientsHandler : () => dispatch(fetchIngredients())
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchtoProps)(Checkout);

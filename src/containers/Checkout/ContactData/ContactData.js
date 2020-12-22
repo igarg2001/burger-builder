@@ -4,7 +4,8 @@ import { connect } from 'react-redux';
 import Button from '../../../components/UI/Button/Button';
 import Spinner from '../../../components/UI/Spinner/Spinner';
 import classes from './ContactData.css';
-import axios from '../../../axios-orders';
+//import axios from '../../../axios-orders';
+import { sendOrder } from "../../../store/actions/index";
 import Input from '../../../components/UI/Input/Input';
 
 class ContactData extends Component {
@@ -45,8 +46,8 @@ class ContactData extends Component {
                 value: '',
                 validation: {
                     required: true,
-                    minLength: 5,
-                    maxLength: 5,
+                    minLength: 6,
+                    maxLength: 6,
                     isNumeric: true
                 },
                 valid: false,
@@ -92,13 +93,16 @@ class ContactData extends Component {
                 valid: true
             }
         },
-        formIsValid: false,
-        loading: false
+        formIsValimoduled: false,
+        loading : false
     }
+
+    // shouldComponentUpdate(nextProps) {
+    //     return this.props.loading !== nextProps.loading
+    // }
 
     orderHandler = ( event ) => {
         event.preventDefault();
-        this.setState( { loading: true } );
         const formData = {};
         for (let formElementIdentifier in this.state.orderForm) {
             formData[formElementIdentifier] = this.state.orderForm[formElementIdentifier].value;
@@ -108,14 +112,9 @@ class ContactData extends Component {
             price: this.props.price,
             orderData: formData
         }
-        axios.post( '/orders.json', order )
-            .then( response => {
-                this.setState( { loading: false } );
-                this.props.history.push( '/' );
-            } )
-            .catch( error => {
-                this.setState( { loading: false } );
-            } );
+        this.setState({loading : true})
+        this.props.sendOrderHandler(order, this.props.history.push)
+        this.setState({loading : false})
     }
 
     checkValidity(value, rules) {
@@ -150,6 +149,7 @@ class ContactData extends Component {
     }
 
     inputChangedHandler = (event, inputIdentifier) => {
+        //console.log('change')
         const updatedOrderForm = {
             ...this.state.orderForm
         };
@@ -169,6 +169,9 @@ class ContactData extends Component {
     }
 
     render () {
+        //console.log(this.props.loading)
+
+        //console.log(this.state.orderForm)
         const formElementsArray = [];
         for (let key in this.state.orderForm) {
             formElementsArray.push({
@@ -206,9 +209,16 @@ class ContactData extends Component {
 
 const mapStateToProps = state => {
     return {
-        ings: state.ingredients,
-        price: state.totalPrice
+        ings: state.burger.ingredients,
+        price: state.burger.totalPrice,
+        loading : state.order.loading
     }
 };
 
-export default connect(mapStateToProps)(ContactData);
+const mapDispatchtoProps = dispatch => {
+    return {
+        sendOrderHandler : (order, push) => dispatch(sendOrder(order, push))
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchtoProps)(ContactData);
